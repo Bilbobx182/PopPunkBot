@@ -1,1 +1,2 @@
 V.1.0.1		Added in comments, made the readme on how to use it more clear.
+V.1.0.2		Made it so program detects more songs. It also takes in URIs now instead of song names
