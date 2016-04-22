@@ -6,18 +6,18 @@ import sys
 import spotipy.util as util
 
 #"Declaring" variables for the first time.
-user_agent = ("bilbobx182crawler")
-username ="eternal_atom"
+user_agent = ("")
+username =""
 tid = ""
-pid = "03VDb9C66xFlisFCMqxgwz"
-scope = 'playlist-modify-public'
+pid = ""
+scope = 'playlist-modify-private'
 
-Cid = "1b2904aec1c64e45941b35bfe7a66792"
-Cs = "a7f0819ab0fa4cee99d7d8f3a34d6193"
+Cid = ""
+Cs = ""
 SRI = "http://localhost:8888/callback"
 onetrack = 0
 track_ids = []
-sub = "music"
+sub = "poppunkers"
 
 r = praw.Reddit(user_agent = user_agent)
 
@@ -35,7 +35,7 @@ else:
 subreddit = r.get_subreddit(sub)
 counter=0
 # the main loop of the program, it tells it as long as there's a submission in the top X amount loop around.
-for submission in subreddit.get_top_from_week(limit=1000):
+for submission in subreddit.get_top_from_week(limit=200):
     num = submission.title.find(' - ')
     if num != -1:
         with open("songlist.txt", "a") as f:
@@ -87,6 +87,14 @@ for submission in subreddit.get_top_from_week(limit=1000):
                 print(len(track_ids))
                 track_ids.clear()
         onetrack = 0
-print(len(track_ids))
-#Adding the track to spotify
 
+
+#dealing with tracks that wouldn't be submitted as the code above only deals with 80 per time but this is for smaller requests
+if(len(track_ids) <= 80):
+    token = util.prompt_for_user_token(username, scope, Cid, Cs, SRI)
+    if token:
+        sp = spotipy.Spotify(auth=token)
+        sp.trace = False
+        results = sp.user_playlist_add_tracks(username, pid, track_ids)
+        track_ids.clear()
+print(len(track_ids))
