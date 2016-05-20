@@ -72,12 +72,18 @@ for submission in subreddit.get_top_from_week(limit=200):
             for i, t in enumerate(result['tracks']['items']):
                 # gets the first track ID and only that ID so it wont repeat through album or singles
                 if (onetrack <= 0):
+                    temp = t['id']
+                    if(temp in songlist):
+                        #For Duplicates
+                        print("ITS HERE ALREADY")
+                        break
+                    else:
                         track_ids.append(t['id'])
                         onetrack = onetrack + 1
                         f.write(t['id'])
                         f.write("\n")
 
-#so the program can handle high amounts of tracks
+                            #so the program can handle high amounts of tracks
         if (len(track_ids) > 80):
             token = util.prompt_for_user_token(username, scope, Cid, Cs, SRI)
             if token:
@@ -90,7 +96,7 @@ for submission in subreddit.get_top_from_week(limit=200):
 
 
 #dealing with tracks that wouldn't be submitted as the code above only deals with 80 per time but this is for smaller requests
-if(len(track_ids) <= 80):
+if(len(track_ids) <= 80 and len(track_ids)>0):
     token = util.prompt_for_user_token(username, scope, Cid, Cs, SRI)
     if token:
         sp = spotipy.Spotify(auth=token)
