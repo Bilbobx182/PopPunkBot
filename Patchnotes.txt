@@ -4,3 +4,4 @@ V.1.0.3		Fixed it so that the program wouldn't break(  as much  ) when dealing w
 V.1.0.4		Made the readme more helpful. Updated code so it will catch all songs. not just 80. 
 V.1.0.5		Added in duplicate checking.
 V.1.0.6		Added in code to parse YouTube links when people format their reddit post wrong. Increased amount of songs caught by 7+%
+V.1.0.7		Updated code to make it slightly more efficient. Although I do wonder the tradeoff between more songs vs accuracy of songs.
