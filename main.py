@@ -5,26 +5,23 @@ import spotipy
 import spotipy.util as util
 from bs4 import BeautifulSoup
 import requests
-import sys
 
-#"Declaring" variables for the first time.
+#Reddit variables
 user_agent = ("bilbobx182crawler")
-username ="eternal_atom"
-tid = ""
-pid = "2NkuQ3ikx0mb4a59W1yXBT"
-scope = 'playlist-modify-private'
-
-Cid = "1b2904aec1c64e45941b35bfe7a66792"
-Cs = "a7f0819ab0fa4cee99d7d8f3a34d6193"
-SRI = "http://localhost:8888/callback"
-onetrack = 0
-track_ids = []
 sub = "poppunkers"
-
-
 r = praw.Reddit(user_agent = user_agent)
 
-# Checking to see if a text file for song list(They're the spotify URI codes) is there
+# Spotify variables
+pid = "6GXK27XsRSngHWROTtOsst" #playlist id
+username ="eternal_atom" #Spotify username
+scope = 'playlist-modify-private' #scope of playlist
+Cid = "1b2904aec1c64e45941b35bfe7a66792" # Spotify ID
+Cs = "a7f0819ab0fa4cee99d7d8f3a34d6193" # Spotify secret ID
+SRI = "http://localhost:8888/callback" # Host
+
+onetrack = 0
+track_ids = []
+
 if not os.path.isfile("songlist.txt"):
     songlist = []
 else:
@@ -39,8 +36,9 @@ def titleparse(songdata,num):
     info=songdata
     global onetrack
     global track_ids
-
-    if(num==1):
+    
+    # Only used if it's a link and the title is wrong AND it's a youtube link so it gets the YT video title.
+    if num==1:
         response = requests.get(songdata)
         soup = BeautifulSoup(response.content, "html.parser")
         title = soup.title.string
@@ -53,7 +51,7 @@ def titleparse(songdata,num):
             i += 1
         info = fixedtitle
 
-    if (" - " in info):
+    if " - " in info:
         info.replace("-", "")
 
     if any("(" or ")" in lis for lis in info):
@@ -77,9 +75,9 @@ def titleparse(songdata,num):
         result = sp.search(info)
         for i, t in enumerate(result['tracks']['items']):
             # gets the first track ID and only that ID so it wont repeat through album or singles
-            if (onetrack <= 0):
+            if onetrack <= 0:
                 temp = t['id']
-                if (temp in songlist):
+                if temp in songlist:
                     # For Duplicates
                     print("ITS HERE ALREADY")
                     break
@@ -88,7 +86,7 @@ def titleparse(songdata,num):
                     onetrack = onetrack + 1
                     f.write(t['id'])
                     f.write("\n")
-                    
+
     print("DONE: " + info)
 
 # tells it to go to /r/poppunkers
@@ -99,12 +97,12 @@ counter=0
 for submission in subreddit.get_top_from_week(limit=300):
     num = submission.title.find(' - ')
     if num != -1:
-        titleparse(submission.title,0)
+        titleparse(submission.title, 0)
 
-    elif('youtu' in submission.url):
-       titleparse(submission.url,1)
+    elif 'youtu' in submission.url:
+        titleparse(submission.url, 1)
 
-    if (len(track_ids) > 80):
+    if len(track_ids) > 80:
         token = util.prompt_for_user_token(username, scope, Cid, Cs, SRI)
         if token:
             sp = spotipy.Spotify(auth=token)
@@ -114,8 +112,7 @@ for submission in subreddit.get_top_from_week(limit=300):
             track_ids.clear()
     onetrack = 0
 
-        #dealing with tracks that wouldn't be submitted as the code above only deals with 80 per time but this is for smaller requests
-if(len(track_ids) <= 80 and len(track_ids)>0):
+if 80 >= len(track_ids) > 0:
     token = util.prompt_for_user_token(username, scope, Cid, Cs, SRI)
     if token:
         sp = spotipy.Spotify(auth=token)

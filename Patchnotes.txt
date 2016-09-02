@@ -7,3 +7,4 @@ V.1.0.6		Added in code to parse YouTube links when people format their reddit po
 V.1.0.7		Updated code to make it slightly more efficient. Although I do wonder the tradeoff between more songs vs accuracy of songs.
 V.1.0.8		Added in another section to post weekly to the sub for a weekly discussion which includes playlist links.
 V.1.0.9		Updated readme.
+V.1.1.0		Updated code for clarity, updated readme adding in more instructions along with a how to youtube video for people that need audio-visual help.
